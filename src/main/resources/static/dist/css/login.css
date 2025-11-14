@@ -1,0 +1,125 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-weight: 700;
+    font-family: 'Roboto', sans-serif;
+}
+
+form {
+    padding-top: 10vh;
+    height: 100%;
+    width: 85%;
+    /* border-radius: 1.5em; */
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    /* -webkit-box-shadow: 0px 0px 12px -3px rgb(255, 255, 255);
+    -moz-box-shadow: 0px 0px 12px -3px rgb(255, 255, 255);
+    box-shadow: 0px 0px 12px -3px rgb(255, 255, 255); */
+}
+
+.form-group {
+    /* background-color: rgb(255, 231, 199); */
+    height: 100%;
+    width: 100%;
+}
+
+.form-control {
+    border: 1px solid rgba(88, 86, 86, 0.663);
+    margin: 1em auto;
+    height: 3.2em;
+    -webkit-box-shadow: 0px 0px 2px 1px rgba(88, 86, 86, 0.46);
+    -moz-box-shadow: 0px 0px 2px 1px rgba(88, 86, 86, 0.46);
+    box-shadow: 0px 0px 2px 1px rgba(88, 86, 86, 0.46);
+}
+
+.form-group label {
+    display: flex;
+    justify-content: start;
+    padding-top: 2%;
+    font-weight: 700;
+}
+
+#btn-cadastrar {
+    background-color: #7c0d06;
+    margin-top: 0em;
+}
+
+#btn-cadastrar:hover {
+    background-color: #ba4535;
+}
+
+button a {
+    font-weight: 500;
+    text-decoration: none;
+    color: white;
+}
+
+button a:hover {
+    color: white;
+}
+
+.btn-primary {
+    background-color: #000082;
+    border: none;
+    font-weight: 700;
+    border-radius: 0.2em;
+}
+
+.btn-primary:hover {
+    background-color: #0601fe;
+    transition: 0.5s;
+}
+
+.btn {
+    font-size: 15px;
+    font-weight: 500;
+    height: 5vh;
+    width: 30vh;
+}
+
+#container-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    /* padding: 2em 2em 2em 2em; */
+}
+
+#container-form {
+    background-color: #f5f5f5;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+#texto-login {
+    padding-top: 1.5em;
+    font-size: large;
+}
+
+#logo-projeto-web {
+    margin-top: 2em;
+    width: 10em;
+    height: 9em;
+}
+
+#recuperar-senha {
+    font-weight: 600;
+}
+
+.container-fluid {
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
+}
+
+#img-container img {
+    height: 100vh;
+    width: 100%;
+}
+
+#img-container {
+    padding: 0 0 0 0 !important;
+
+}

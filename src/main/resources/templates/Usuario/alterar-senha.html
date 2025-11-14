@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Alterar Senha</title>
+    <link rel="stylesheet" th:href="@{/dist/css/alterar-senha.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/main.css}">
+    <script defer th:src="@{/dist/js/alterar-senha.js}"></script>
+</head>
+<body>
+
+<div class="container">
+    <h2>Alterar Senha</h2>
+
+    <form method="post" action="/usuario/alterar-senha">
+        <label>Nova Senha</label>
+        <input type="password" name="novaSenha" required>
+
+        <button>Salvar</button>
+    </form>
+</div>
+
+</body>
+</html>

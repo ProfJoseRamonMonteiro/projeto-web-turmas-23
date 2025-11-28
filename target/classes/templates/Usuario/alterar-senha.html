@@ -1,23 +1,80 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Alterar Senha</title>
-    <link rel="stylesheet" th:href="@{/dist/css/alterar-senha.css}">
-    <link rel="stylesheet" th:href="@{/dist/css/main.css}">
-    <script defer th:src="@{/dist/js/alterar-senha.js}"></script>
+
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link type="text/css" rel="stylesheet" th:href="@{/dist/css/bootstrap.min.css}" />
+
+    <!-- Slick -->
+    <link type="text/css" rel="stylesheet" th:href="@{/dist/css/slick.css}" />
+    <link type="text/css" rel="stylesheet" th:href="@{/dist/css/slick-theme.css}" />
+
+    <!-- nouislider -->
+    <link type="text/css" rel="stylesheet" th:href="@{/dist/css/nouislider.min.css}" />
+
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" th:href="@{/dist/css/font-awesome.min.css}">
+
+    <link rel="stylesheet" th:href="@{/dist/css/admin-dashboard.css}">
 </head>
-<body>
 
-<div class="container">
-    <h2>Alterar Senha</h2>
+<body class="admin-body">
 
-    <form method="post" action="/usuario/alterar-senha">
-        <label>Nova Senha</label>
-        <input type="password" name="novaSenha" required>
+    <header class="admin-header">
+        <div class="container">
+            <ul class="admin-header pull-left">
+                <li><img src="/image/logo-projeto-web.png" alt="" height="30px"></li>
+                <li>
+                    <h1 class="header-title">Alterar Senha</h1>
+                </li>
+            </ul>
+        </div>
+    </header>
 
-        <button>Salvar</button>
-    </form>
-</div>
+    <main class="admin-main">
+        <h2>Alterar Senha</h2>
+
+        <form method="post" action="/usuario/alterar-senha/salvar">
+            <div class="form-row">
+                <label class="form-label">Nova Senha</label>
+                <input type="password" name="novaSenha" class="form-control" required>
+            </div>
+
+            <div class="form-row pull-right" style="margin-top: 10px;">
+                <button class="btn btn-primary"><i class="fa fa-floppy-o"></i> Salvar</button>
+            </div>
+        </form>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer id="footer">
+        <div id="admin-footer" class="section">
+            <!-- /container -->
+            <div class="container">
+                <!-- row -->
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <span class="copyright">
+                            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                            Copyright &copy;
+                            <script>document.write(new Date().getFullYear());</script> Todos Direitos Reservados
+                            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        </span>
+                    </div>
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </div>
+    </footer>
+    <!-- /FOOTER -->
 
 </body>
+
 </html>

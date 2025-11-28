@@ -21,7 +21,7 @@ public class LoginController {
 
     @GetMapping("/login")
     public String loginPage() {
-        return "/Login/login"; // templates/login.html
+        return "/Login/login";
     }
 
     @PostMapping("/login")
@@ -30,19 +30,25 @@ public class LoginController {
             @RequestParam String senha,
             Model model,
             HttpSession session) {
+
         return usuarioService.autenticar(username, senha)
                 .map(u -> {
                     session.setAttribute("usuarioLogado", u);
+
                     if (u.getNivelAcesso().equals(NivelAcessoEnum.ADMINISTRADOR)) {
-                        if (u.isPrimeiroAcesso()) {
-                            return "redirect:/alterar-senha";
+                        if (u.getPrimeiroAcesso()) {
+                            return "redirect:/usuario/alterar-senha";
                         }
                         return "redirect:/admin/dashboard";
                     }
+
+                    if (u.getNivelAcesso().equals(NivelAcessoEnum.CLIENTE)) {
+                        return "redirect:/";
+                    }
+
                     return "redirect:/";
                 })
                 .orElseGet(() -> {
-                    System.out.println("Credenciais inválidas!");
                     model.addAttribute("erro", "Credenciais inválidas!");
                     return "/Login/login";
                 });
@@ -59,7 +65,7 @@ public class LoginController {
         return "/Usuario/cadastro";
     }
 
-    @PostMapping("/cadastro")
+    @PostMapping("/cadastro/salvar")
     public String cadastro(
             @RequestParam String username,
             @RequestParam String senha,

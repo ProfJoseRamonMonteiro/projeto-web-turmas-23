@@ -1,0 +1,504 @@
+/* ====================== VARIÁVEIS ====================== */
+:root {
+    --primary-color: #0d2d0a;
+    --secondary-color: #5bc0de;
+    --dark-color: #2B2D42;
+    --text-color: #333;
+    --light-grey: #E4E7ED;
+    --danger-color: #dc3545;
+}
+
+/* ====================== GERAL ====================== */
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #FBFBFC;
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+}
+
+.section {
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+h1, h2, h3 {
+    color: var(--dark-color);
+    font-weight: 700;
+}
+
+/* 🔧 Correção essencial para inputs não ultrapassarem containers */
+input,
+select,
+textarea,
+.form-control {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+a {
+    color: #243d1e;
+    font-weight: 500;
+    -webkit-transition: 0.2s color;
+    transition: 0.2s color;
+}
+
+a:hover,
+a:focus {
+    color: #5e9051;
+    text-decoration: none;
+    outline: none;
+}
+
+ul,
+ol {
+    margin: 0;
+    padding: 0;
+    list-style: none
+}
+
+.admin-body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-main {
+    flex-grow: 1;
+    padding: 20px;
+    max-width: 1200px;
+    width: 95%;
+    margin: 20px auto;
+    background-color: #FFF;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* ====================== HEADER ====================== */
+.admin-header {
+    background-color: #1e5017;
+    color: #FFF;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-title {
+    margin: 0;
+    color: #FFF;
+    font-size: 1.5em;
+}
+
+.admin-nav .nav-link {
+    color: #FFF;
+    text-decoration: none;
+    margin-left: 20px;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.admin-nav .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.admin-header li {
+    display: inline-block;
+    margin-right: 15px;
+    font-size: 16px;
+}
+
+.admin-header li:last-child {
+    margin-right: 0px;
+}
+
+.admin-header li a {
+    color: #FFF;
+}
+
+.admin-header li a:hover {
+    color: #9fd38f;
+}
+
+.admin-header li i {
+    color: #9fd38f;
+    margin-right: 5px;
+}
+
+.dashboard-left,
+.dashboard-right {
+    flex: 1;
+}
+
+/* ====================== FORMULÁRIOS ====================== */
+
+/* Garante alinhamento e espaçamento */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+/* LABELS */
+.form-label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.check-box-label {
+    font-size: 14px;
+    font-weight: 400;
+    display: block;
+}
+
+/* Inputs estilo Bootstrap-like */
+.form-control {
+    display: block;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 400;
+    color: #333;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    transition: border-color .2s ease-in-out, box-shadow .2s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(209, 0, 36, 0.25);
+    outline: none;
+}
+
+/* Textarea */
+textarea.form-control {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Select */
+select.form-control {
+    cursor: pointer;
+}
+
+/* File input */
+input[type="file"] {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    background-color: #fff;
+}
+
+/* Preview da imagem do produto */
+.image-preview-box {
+    width: 100%;
+    max-width: 180px;
+    height: 180px;
+    border: 1px solid var(--light-grey);
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #f8f8f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    overflow: hidden;
+}
+
+.image-preview-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Container do input para maior controle */
+.input-file-container {
+    width: 100%;
+}
+
+/* Estilização completa do input file */
+.input-file-estilizado {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #cfd7df;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 15px;
+    color: #444;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+/* Remove estilos internos do input file */
+.input-file-estilizado::-webkit-file-upload-button {
+    background: #eef1f5;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px 0 0 6px;
+    margin-right: 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.input-file-estilizado::-webkit-file-upload-button:hover {
+    background: #e0e4e8;
+}
+
+/* Firefox */
+.input-file-estilizado::file-selector-button {
+    background: #eef1f5;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px 0 0 6px;
+    margin-right: 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.input-file-estilizado::file-selector-button:hover {
+    background: #e0e4e8;
+}
+
+.form-footer {
+    display: flex;
+    justify-content: flex-end;   /* Tudo alinhado à direita */
+    align-items: center;
+    gap: 14px;                   /* Espaço entre os botões/links */
+    margin-top: 25px;
+}
+
+/* BOTÃO SUBMIT */
+.btn-submit {
+    background-color: #024201;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-submit:hover {
+    background-color: #036d01;
+}
+
+/* BOTÃO REMOVE (link que dispara form) */
+.btn-remove {
+    background-color: #b30000;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 15px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-remove:hover {
+    background-color: #cc0000;
+}
+
+/* BOTÃO CANCELAR (link comum) */
+.btn-cancel {
+    background-color: #0e0770;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 15px;
+    text-decoration: none;
+    transition: background 0.2s ease;
+    border: none;
+}
+
+.btn-cancel:hover {
+    background-color: #2b15bd;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .form-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .form-footer .btn-submit,
+    .form-footer .btn-remove,
+    .form-footer .btn-cancel {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Desabilitado */
+.form-control:disabled {
+    background-color: #e9ecef;
+    opacity: 1;
+}
+
+/* Linhas com 2 inputs lado a lado */
+.form-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap; /* impede ultrapassagem */
+}
+
+/* Corrigido: evita 100% + padding estourar */
+.half-width {
+    flex: 1 1 calc(50% - 10px);
+    min-width: 260px;
+}
+
+/* Checkboxes */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 20px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--primary-color);
+}
+
+/* ====================== BOTÕES ====================== */
+.btn {
+    display: inline-block;
+    padding: 8px 22px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: #FFF;
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    color: #FFF;
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: #FFF;
+}
+
+/* ====================== RESPONSIVO ====================== */
+@media (max-width: 900px) {
+    .half-width {
+        flex: 1 1 100%;
+    }
+}
+
+@media only screen and (max-width: 991px) {
+    #top-header .header-links.pull-left {
+        float: none !important;
+    }
+
+    #top-header .header-links.pull-right {
+        float: none !important;
+        margin-top: 5px;
+    }
+}
+
+.container-imagens {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+    margin-top: 20px;
+}
+
+/* Cada coluna */
+.coluna-img {
+    flex: 1;
+    text-align: center;
+}
+
+/* Títulos */
+.coluna-img h3 {
+    font-size: 18px;
+    margin-bottom: 12px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Área onde a imagem aparece */
+.box-imagem {
+    width: 100%;
+    max-width: 260px;
+    height: 340px;
+    background: #f7f7f7;
+    border: 1px solid #e2e2e2;
+    border-radius: 12px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Imagens */
+.box-imagem img {
+    width: auto;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Input de imagem */
+.input-file {
+    margin-top: 40px;
+    width: 100%;
+    max-width: 320px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background: #fff;
+}
+
+/* Modo responsivo */
+@media (max-width: 900px) {
+    .container-imagens {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .coluna-img {
+        width: 100%;
+    }
+}
+
+#admin-footer {
+    background: #002400;
+    color: #FFF;
+}
+
+.footer {
+    margin: 30px 0px;
+}
+
+.footer .footer-title {
+    color: #FFF;
+    text-transform: uppercase;
+    font-size: 18px;
+    margin: 0px 0px 30px;
+}
+
+.copyright {
+    margin-top: 30px;
+    display: block;
+    font-size: 12px;
+}

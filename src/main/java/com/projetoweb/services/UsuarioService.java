@@ -2,6 +2,8 @@ package com.projetoweb.services;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
@@ -15,16 +17,20 @@ import jakarta.transaction.Transactional;
 public class UsuarioService {
 
     private final UsuarioRepo usuarioRepository;
-    // senha default para criação automatica do admin - deve ser alterada no primeiro acesso
+
     private static final String ADMIN_DEFAULT_USERNAME = "admin";
-    private static final String ADMIN_DEFAULT_PASSWORD = "admin123!"; // recomende trocar em produção
+    private static final String ADMIN_DEFAULT_PASSWORD = "admin123!";
 
     public UsuarioService(UsuarioRepo usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
 
-    // Cripta senha com BCrypt
-    public String hashSenha(String senha) {
+    /*
+     * ===========================
+     * UTILIDADES
+     * ===========================
+     */
+    private String hashSenha(String senha) {
         return BCrypt.hashpw(senha, BCrypt.gensalt(12));
     }
 
@@ -32,15 +38,31 @@ public class UsuarioService {
         return BCrypt.checkpw(senhaPlain, hash);
     }
 
+    /*
+     * ===========================
+     * BUSCAS
+     * ===========================
+     */
     public Optional<UsuarioModel> findByNomeUsuario(String nomeUsuario) {
         return usuarioRepository.findByNomeUsuario(nomeUsuario);
     }
 
+    public Page<UsuarioModel> listarPorNivel(NivelAcessoEnum nivel, Pageable pg) {
+        return usuarioRepository.findByNivelAcesso(nivel, pg);
+    }
+
+    /*
+     * ===========================
+     * REGISTRO DE CLIENTE
+     * ===========================
+     */
     @Transactional
     public UsuarioModel registrarCliente(String nomeUsuario, String senhaPlain, String nome) {
+
         if (usuarioRepository.existsByNomeUsuario(nomeUsuario)) {
-            throw new IllegalArgumentException("Nome de usuário já existe");
+            throw new IllegalArgumentException("Nome de usuário já está em uso.");
         }
+
         UsuarioModel u = new UsuarioModel();
         u.setNomeUsuario(nomeUsuario);
         u.setNome(nome);
@@ -48,9 +70,15 @@ public class UsuarioService {
         u.setNivelAcesso(NivelAcessoEnum.CLIENTE);
         u.setHabilitado(true);
         u.setPrimeiroAcesso(false);
+
         return usuarioRepository.save(u);
     }
 
+    /*
+     * ===========================
+     * CRIAÇÃO DO ADMIN PADRÃO
+     * ===========================
+     */
     @Transactional
     public void initAdminIfNotExists() {
         if (!usuarioRepository.existsByNomeUsuario(ADMIN_DEFAULT_USERNAME)) {
@@ -60,31 +88,53 @@ public class UsuarioService {
             admin.setSenha(hashSenha(ADMIN_DEFAULT_PASSWORD));
             admin.setNivelAcesso(NivelAcessoEnum.ADMINISTRADOR);
             admin.setHabilitado(true);
-            admin.setPrimeiroAcesso(true); // forçar alteração no primeiro login
+            admin.setPrimeiroAcesso(true);
             usuarioRepository.save(admin);
         }
     }
 
+    /*
+     * ===========================
+     * ALTERAR SENHA
+     * ===========================
+     */
     @Transactional
     public UsuarioModel alterarSenha(Long usuarioId, String novaSenha) {
         UsuarioModel u = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+
         u.setSenha(hashSenha(novaSenha));
         u.setPrimeiroAcesso(false);
+
         return usuarioRepository.save(u);
     }
 
-    // Método para validação manual de login (sem Spring Security)
+    /*
+     * ===========================
+     * AUTENTICAÇÃO
+     * ===========================
+     */
     public Optional<UsuarioModel> autenticar(String username, String senhaPlain) {
-        System.out.println("PegaUser1");
-        Optional<UsuarioModel> ou = usuarioRepository.findByNomeUsuario(username);
-        if (ou.isPresent()) {
-            UsuarioModel u = ou.get();
-            if (verificarSenha(senhaPlain, u.getSenha())) {
-                return Optional.of(u);
-            }
-        }
-        return Optional.empty();
+
+        return usuarioRepository.findByNomeUsuario(username)
+                .filter(u -> verificarSenha(senhaPlain, u.getSenha()));
+    }
+
+    /*
+     * ===========================
+     * ESTATÍSTICAS
+     * ===========================
+     */
+    public Long totalClientes() {
+        return usuarioRepository.countByNivelAcesso(NivelAcessoEnum.CLIENTE);
+    }
+
+    @Transactional
+    public UsuarioModel toggleHabilitado(Long usuarioId) {
+        UsuarioModel u = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
+        u.setHabilitado(!u.isHabilitado());
+        return usuarioRepository.save(u);
     }
 
 }

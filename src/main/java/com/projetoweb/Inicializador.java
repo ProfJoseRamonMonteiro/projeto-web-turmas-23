@@ -12,12 +12,10 @@ public class Inicializador implements CommandLineRunner{
 
     public Inicializador(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
-        System.out.println("PegaUser2");
     }
 
     public void run(String... args) {
         usuarioService.initAdminIfNotExists();
-        System.out.println("PegaUser3");
     }
 
 }

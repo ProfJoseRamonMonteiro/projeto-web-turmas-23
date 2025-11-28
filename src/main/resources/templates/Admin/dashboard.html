@@ -3,92 +3,704 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Painel Administrativo</title>
+    <title>Dashboard Administrativo</title>
 
-    <link rel="stylesheet" th:href="@{dist/css/admin-dashboard.css}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link type="text/css" rel="stylesheet" th:href="@{/dist/css/bootstrap.min.css}" />
+
+    <!-- Slick -->
+    <link type="text/css" rel="stylesheet" th:href="@{/dist/css/slick.css}" />
+    <link type="text/css" rel="stylesheet" th:href="@{/dist/css/slick-theme.css}" />
+
+    <!-- nouislider -->
+    <link type="text/css" rel="stylesheet" th:href="@{/dist/css/nouislider.min.css}" />
+
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" th:href="@{/dist/css/font-awesome.min.css}">
+
+    <link rel="stylesheet" th:href="@{/dist/css/admin-dashboard.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
-<body>
-    <header class="navbar navbar-dark bg-primary p-3">
-        <a class="navbar-brand ms-3" href="/admin/dashboard">Painel Administrativo</a>
-        <a href="/logout" class="btn btn-outline-light me-3">Sair</a>
+<body class="admin-body">
+
+    <header class="admin-header">
+
+        <div class="container">
+            <ul class="admin-header pull-left">
+                <li><img src="/image/logo-projeto-web.png" alt="" height="30px"></li>
+                <li>
+                    <h1 class="header-title">Dashboard Administrativo</h1>
+                </li>
+            </ul>
+            <ul class="admin-header pull-right">
+                <li><a class="nav-link" th:href="@{/admin/dashboard}"><i class="fa fa-home"></i> Início</a></li>
+                <li><a class="nav-link" th:href="@{/logout}"><i class="fa fa-sign-out"></i> Sair</a></li>
+            </ul>
+        </div>
     </header>
 
-    <div class="container mt-4">
-        <h2 class="mb-4 text-center">Resumo de Vendas</h2>
+    <div class="container">
+        <div class="dashboard">
 
-        <div class="row mb-4 text-center">
-            <div class="card p-4">
-                <h4 class="mb-3">Gráfico de Vendas por Mês</h4>
-                <canvas id="graficoVendas" height="120"></canvas>
+            <!-- ================== CARDS ================== -->
+            <div class="cards-container">
+
+                <div class="card">
+                    <i class="fa fa-calendar-check-o"></i>
+                    <h3>Vendas no Ano</h3>
+                    <div class="valor">
+                        <p th:text="${#numbers.formatCurrency(totalAno)}">R$ 0,00</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <i class="fa fa-shopping-bag"></i>
+                    <h3>Pedidos Realizados</h3>
+                    <div class="valor">
+                        <p th:text="${totalPedidos}"></p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <i class="fa fa-users"></i>
+                    <h3>Total de Clientes</h3>
+                    <div class="valor">
+                        <p th:text="${totalClientes}"></p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <i class="fa fa-area-chart"></i>
+                    <h3>Faturamento do Mês</h3>
+                    <div class="valor">
+                        <p th:text="${#numbers.formatCurrency(faturamentoMes)}"></p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ================== GRÁFICO ================== -->
+            <div class="grafico-container">
+                <div class="grafico-header">
+                    <h2><i class="fa fa-bar-chart "></i> Vendas Mensais</h2>
+                </div>
+
+                <div>
+                    <!-- FILTRO -->
+                    <form th:action="@{/admin/dashboard}" method="get" class="filter-form">
+                        <div class="form-row">
+                            <!-- MÊS -->
+                            <div class="form-group half-width">
+                                <label for="mes" class="form-label">Mês</label>
+                                <select name="mes" id="filtroMes" class="form-control">
+                                    <option value="">Todos</option>
+                                    <option th:each="entry : ${mesesDisponiveis}" th:value="${entry.key}"
+                                        th:text="${entry.value}" th:selected="${mesSelecionado == entry.key}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- ANO -->
+                            <div class="form-group half-width">
+                                <label for="ano" class="form-label">Ano</label>
+                                <select name="ano" id="filtroAno" class="form-control">
+                                    <option value="">Todos</option>
+                                    <option th:each="a : ${anosDisponiveis}" th:value="${a}" th:text="${a}"
+                                        th:selected="${anoSelecionado == a}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="pull-right">
+                            <button type="submit" id="btnFiltrar" class="btn btn-filtrar"><i class="fa fa-filter"></i>
+                                Filtrar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <canvas id="graficoMensal" class="grafico-area"></canvas>
             </div>
         </div>
 
     </div>
 
-    <!-- Seção da Tabela de Produtos -->
-    <div class="container mt-4">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title mb-3">Produtos Cadastrados</h5>
-                <a th:href="@{/admin/produtos/novo}" class="btn btn-secondary btn-sm">
-                    <i class="fa-solid fa-file-circle-plus"></i>
-                </a>
-                <div class="table-responsive">
-                    <table class="table table-striped align-middle">
-                        <thead class="table-light">
+    <div class="modal fade" id="modalDetalhesPedido" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Itens do Pedido</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <table class="table table-striped">
+                        <thead>
                             <tr>
-                                <th>Imagem</th>
-                                <th>Nome</th>
-                                <th>Categoria</th>
+                                <th>Produto</th>
+                                <th>Qtd</th>
                                 <th>Preço</th>
-                                <th>Destaque</th>
-                                <th>Promoção</th>
-                                <th>Ações</th>
+                                <th>Subtotal</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr th:each="produto : ${produtos}">
-                                <td>
-                                    <img th:src="|/imagem/${produto.idProduto}|" width="70" class="rounded">
-                                </td>
-                                <td th:text="${produto.nome}"></td>
-                                <td th:text="${produto.categoria.nome}"></td>
-                                <td th:text="${#numbers.formatDecimal(produto.preco, 2, 'COMMA', 2, 'POINT')}"></td>
-                                <td>
-                                    <span th:text="${produto.destaque} ? 'Sim' : 'Não'"
-                                        th:classappend="${produto.destaque} ? 'text-success' : 'text-muted'"></span>
-                                </td>
-                                <td>
-                                    <span th:text="${produto.emPromocao} ? 'Sim' : 'Não'"
-                                        th:classappend="${produto.emPromocao} ? 'text-warning' : 'text-muted'"></span>
-                                </td>
-                                <td>
-                                    <a th:href="@{/admin/produtos/editar/{id}(id=${produto.idProduto})}"
-                                        class="btn btn-primary btn-sm">
-                                        <i class="fa fa-edit"></i> Editar
-                                    </a>
-                                    <a th:href="@{/admin/produtos/remover/{id}(id=${produto.idProduto})}"
-                                        class="btn btn-danger btn-sm"
-                                        onclick="return confirm('Deseja excluir este produto?');">
-                                        <i class="fa fa-trash"></i> Excluir
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr th:if="${#lists.isEmpty(produtos)}">
-                                <td colspan="6" class="text-center text-muted py-3">Nenhum produto cadastrado.</td>
-                            </tr>
-                        </tbody>
+                        <tbody id="tbodyItensPedido"></tbody>
                     </table>
                 </div>
+
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <main class="admin-main">
+        <!-- TABS -->
+        <div class="tab-header">
+            <button class="tab-btn" data-tab="clientes" th:classappend="${abaAtiva == 'clientes'} ? ' active'">
+                <i class="fa fa-users"></i> Clientes
+            </button>
+
+            <button class="tab-btn" data-tab="pedidos" th:classappend="${abaAtiva == 'pedidos'} ? ' active'">
+                <i class="fa fa-shopping-bag"></i> Pedidos
+            </button>
+
+            <button class="tab-btn" data-tab="categorias" th:classappend="${abaAtiva == 'categorias'} ? ' active'">
+                <i class="fa fa-tags"></i> Categorias
+            </button>
+
+            <button class="tab-btn" data-tab="produtos" th:classappend="${abaAtiva == 'produtos'} ? ' active'">
+                <i class="fa fa-hashtag"></i> Produtos
+            </button>
+        </div>
+
+        <!-- CONTEÚDO DAS TABS -->
+        <div class="tab-content">
+
+            <!-- TAB CLIENTES -->
+            <div id="clientes" class="tab-panel" th:classappend="${abaAtiva == 'clientes'} ? ' active'">
+                <div class="card-header-custom">
+                    <!-- ESQUERDA: Ícone + Título -->
+                    <div class="left-area">
+                        <h2 class="produto-header-title"><i class="fa fa-users"></i> Clientes</h2>
+                    </div>
+
+                    <!-- DIREITA: Label + Select -->
+                    <div class="right-area">
+
+                        <!-- SELECT DE TAMANHO (POST) -->
+                        <form method="post" th:action="@{/admin/dashboard}">
+                            <label for="sizeClientes">Clientes por página:</label>
+
+                            <select id="sizeClientes" name="sizeClientes" class="form-select"
+                                onchange="this.form.submit()">
+                                <option th:each="sCli : ${sizesClientes}" th:value="${sCli}" th:text="${sCli}"
+                                    th:selected="${sCli == sizeClientes}">
+                                </option>
+                            </select>
+
+                            <input type="hidden" name="pageClientes" th:value="${paginaAtualClientes}">
+                            <input type="hidden" name="acao" value="clientes">
+                        </form>
+                    </div>
+                </div>
+
+                <table class="table-striped" style="width:100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th hidden>ID</th>
+                            <th style="text-align:center;">Nome</th>
+                            <th style="text-align:center;">Nome de Usuário</th>
+                            <th style="text-align:center;">Habilitado</th>
+                            <th style="text-align:center;"></th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tabela-clientes">
+                        <tr th:each="c, i : ${clientes}" th:id="'cliente-' + ${c.idUsuario}">
+                            <td th:text="${c.idUsuario}" hidden></td>
+                            <td th:text="${c.nome}"></td>
+                            <td th:text="${c.nomeUsuario}"></td>
+                            <td style="text-align: center;"><span
+                                    th:class="'habilitado' + ${c.habilitado ? ' badge badge-success' : ' badge badge-danger'}"
+                                    th:text="${c.habilitado ? 'Habilitado' : 'Desabilitado'}"></span></td>
+
+                            <td style="text-align:center;">
+
+                                <button class="btn btn-toggle-cliente"
+                                    th:classappend="${c.habilitado} ? ' btn-danger' : ' btn-success'"
+                                    th:data-id="${c.idUsuario}">
+
+                                    <i th:class="${c.habilitado} ? 'fa fa-toggle-off' : 'fa fa-toggle-on'"></i>
+
+                                    <span th:text="${c.habilitado} ? 'Desabilitar' : 'Habilitar'"></span>
+                                </button>
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- MOSTRANDO X DE Y -->
+                <div style="margin-top:20px; text-align:center;">
+                    <strong>Mostrando <span th:text="${itensPaginaClientes}"></span> de
+                        <span th:text="${totalItensClientes}"></span></strong>
+                </div>
+
+                <!-- FORM INVISÍVEL PARA PAGINAÇÃO -->
+                <form id="formPaginacaoClientes" method="post" th:action="@{/admin/dashboard}">
+                    <input type="hidden" name="pageClientes" id="pageClientesHidden"
+                        th:value="${paginaAtualClientes}" />
+                    <input type="hidden" name="sizeClientes" th:value="${sizeClientes}" />
+                    <input type="hidden" name="acao" value="clientes" />
+                </form>
+
+                <!-- PAGINAÇÃO -->
+                <nav aria-label="Navegação de páginas de clientes" style="text-align: center;">
+                    <ul class="pagination">
+
+                        <!-- VOLTAR -->
+                        <li class="page-item" th:classappend="${paginaAtualClientes == 1} ? 'disabled'">
+                            <a class="page-link" href="javascript:void(0)"
+                                th:onclick="'document.getElementById(\'pageClientesHidden\').value=' + (${paginaAtualClientes - 1}) + '; document.getElementById(\'formPaginacaoClientes\').submit();'">
+                                Anterior
+                            </a>
+                        </li>
+
+                        <!-- NUMERAÇÃO -->
+                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPaginasClientes)}"
+                            th:classappend="${i == paginaAtualClientes} ? 'active'">
+                            <a class="page-link" href="javascript:void(0)" th:text="${i}"
+                                th:onclick="'document.getElementById(\'pageClientesHidden\').value=' + (${i}) + '; document.getElementById(\'formPaginacaoClientes\').submit();'">
+                            </a>
+                        </li>
+
+                        <!-- PRÓXIMO -->
+                        <li class="page-item"
+                            th:classappend="${paginaAtualClientes == totalPaginasClientes} ? 'disabled'">
+                            <a class="page-link" href="javascript:void(0)"
+                                th:onclick="'document.getElementById(\'pageClientesHidden\').value=' + (${paginaAtualClientes + 1}) + '; document.getElementById(\'formPaginacaoClientes\').submit();'">
+                                Próximo
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- TAB PEDIDOS -->
+            <div id="pedidos" class="tab-panel" th:classappend="${abaAtiva == 'pedidos'} ? ' active'">
+                <div class="card-header-custom">
+
+                    <!-- ESQUERDA: Ícone + Título -->
+                    <div class="left-area">
+                        <h2 class="produto-header-title"><i class="fa fa-shopping-bag"></i> Pedidos</h2>
+                    </div>
+
+                    <div class="right-area">
+                        <form method="post" th:action="@{/admin/dashboard}">
+                            <label for="sizePedidos">Pedidos por página:</label>
+
+                            <select id="sizePedidos" name="sizePedidos" class="form-select"
+                                onchange="this.form.submit()">
+                                <option th:each="sPed : ${sizesPedidos}" th:value="${sPed}" th:text="${sPed}"
+                                    th:selected="${sPed == sizePedidos}">
+                                </option>
+                            </select>
+
+                            <input type="hidden" name="pagePedidos" th:value="${paginaAtualPedidos}">
+                            <input type="hidden" name="acao" value="pedidos">
+                        </form>
+
+                    </div>
+                </div>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th hidden>ID</th>
+                            <th style="text-align: center;">Cliente</th>
+                            <th style="text-align: center;">Data do Pedido</th>
+                            <th style="text-align: center;">Total</th>
+                            <th style="text-align: center;">Situação</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tabelaPedidos">
+                        <tr th:each="p : ${pedidos}" th:id="'pedido-' + ${p.idPedido}">
+                            <td hidden th:text="${p.idPedido}"></td>
+                            <td th:text="${p.cliente.nome}"></td>
+                            <td style="text-align: center;" th:text="${#temporals.format(p.dataCriacao, 'dd/MM/yyyy')}">
+                            </td>
+                            <td style="text-align: center;" th:text="${#numbers.formatCurrency(p.total)}"></td>
+                            <td style="text-align: center;" th:text="${p.status}" class="status"></td>
+                            <td style="text-align: center;">
+                                <button class="btn btn-info btn-toggle" th:attr="data-id=${p.idPedido}">
+                                    <i class="fa fa-eye"></i> Detalhar
+                                </button>
+
+                                <button class="btn btn-enviar"
+                                    th:classappend="${p.status == 'Enviado'} ? ' btn-primary' : ' btn-success'"
+                                    th:data-id="${p.idPedido}" th:disabled="${p.status == 'Enviado'}">
+
+                                    <i th:class="${p.status == 'Enviado'} ? 'fa fa-check' : 'fa fa-paper-plane'"></i>
+
+                                    <span th:text="${p.status == 'Enviado'} ? 'Enviado' : 'Enviar'"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- SEÇÃO ESCONDIDA — clonada e movida via JS -->
+                <table style="display:none;">
+                    <tbody>
+                        <tr id="template-detalhes">
+                            <td colspan="5" style="background:#f8f9fa;">
+                                <div class="p-3">
+                                    <h6 class="titulo-pedido"></h6>
+
+                                    <table class="table table-bordered mt-2">
+                                        <thead>
+                                            <tr>
+                                                <th>Produto</th>
+                                                <th>Qtd</th>
+                                                <th>Preço</th>
+                                                <th>Subtotal</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody class="itens-container"></tbody>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- MOSTRANDO X DE Y -->
+                <div style="margin-top:20px; text-align:center;">
+                    <strong>Mostrando <span th:text="${itensPaginaPedidos}"></span> de
+                        <span th:text="${totalItensPedidos}"></span></strong>
+                </div>
+
+                <!-- FORM INVISÍVEL PAGINAÇÃO -->
+                <form id="formPaginacaoPedidos" method="post" th:action="@{/admin/dashboard}">
+                    <input type="hidden" name="pagePedidos" id="pagePedidosHidden" th:value="${paginaAtualPedidos}" />
+                    <input type="hidden" name="sizePedidos" th:value="${sizePedidos}" />
+                    <input type="hidden" name="acao" value="pedidos" />
+                </form>
+
+                <!-- PAGINAÇÃO -->
+                <nav aria-label="Navegação de páginas de pedidos" style="text-align:center;">
+                    <ul class="pagination">
+
+                        <!-- VOLTAR -->
+                        <li class="page-item" th:classappend="${paginaAtualPedidos == 1} ? 'disabled'">
+                            <a class="page-link" href="javascript:void(0)"
+                                th:onclick="'document.getElementById(\'pagePedidosHidden\').value=' + (${paginaAtualPedidos - 1}) + '; document.getElementById(\'formPaginacaoPedidos\').submit();'">
+                                Anterior
+                            </a>
+                        </li>
+
+                        <!-- NUMERAÇÃO -->
+                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPaginasPedidos)}"
+                            th:classappend="${i == paginaAtualPedidos} ? 'active'">
+                            <a class="page-link" href="javascript:void(0)" th:text="${i}"
+                                th:onclick="'document.getElementById(\'pagePedidosHidden\').value=' + (${i}) + '; document.getElementById(\'formPaginacaoPedidos\').submit();'">
+                            </a>
+                        </li>
+
+                        <!-- PRÓXIMO -->
+                        <li class="page-item"
+                            th:classappend="${paginaAtualPedidos == totalPaginasPedidos} ? 'disabled'">
+                            <a class="page-link" href="javascript:void(0)"
+                                th:onclick="'document.getElementById(\'pagePedidosHidden\').value=' + (${paginaAtualPedidos + 1}) + '; document.getElementById(\'formPaginacaoPedidos\').submit();'">
+                                Próximo
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+
+            </div>
+
+        </div>
+
+        <!-- TAB CATEGORIAS -->
+        <div id="categorias" class="tab-panel" th:classappend="${abaAtiva == 'categorias'} ? ' active'">
+            <div class="card-header-custom">
+
+                <!-- ESQUERDA: Ícone + Título -->
+                <div class="left-area">
+                    <h2 class="produto-header-title"><i class="fa fa-tags"></i> Categorias</h2>
+                </div>
+
+                <!-- DIREITA: Label + Select + Link -->
+                <div class="right-area">
+                    <!-- ALTERA TAMANHO DA PÁGINA (POST PARA NÃO APARECER NA URL) -->
+                    <form method="post" th:action="@{/admin/dashboard}">
+                        <label for="sizeCategorias">Itens por página:</label>
+
+                        <select id="sizeCategorias" name="sizeCategorias" class="form-select"
+                            onchange="this.form.submit()">
+                            <option th:each="sCat : ${sizesCat}" th:value="${sCat}" th:text="${sCat}"
+                                th:selected="${sCat == sizeCategorias}"> </option>
+                        </select>
+
+                        <input type="hidden" name="pageCategorias" th:value="${paginaAtualCategorias}">
+                        <input type="hidden" name="acao" value="categorias">
+                    </form>
+
+                    <a class="btn btn-primary" th:href="@{/admin/categorias/nova}"><i class="fa fa-plus-square"></i>
+                        Nova Categoria</a>
+                </div>
+            </div>
+
+            <table class="table-striped" style="width:100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="padding: 10px;" hidden>ID</th>
+                        <th style="text-align: center;">Nome</th>
+                        <th style="text-align: center;">Descrição</th>
+                        <th style="text-align: center;">Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="c, i : ${categorias}">
+                        <td th:text="${c.idCategoria}" hidden style="padding: 10px;"></td>
+                        <td th:text="${c.nome}"></td>
+                        <td th:text="${c.descricao}" style="text-align: justify;"></td>
+
+                        <td style="text-align: center;">
+
+                            <form th:id="'formEditarCat' + ${i.index}" th:action="@{/admin/categorias/editar}"
+                                method="post">
+                                <input type="hidden" name="idCategoria" th:value="${c.idCategoria}">
+                            </form>
+
+                            <a href="#"
+                                th:onclick="'document.getElementById(\'formEditarCat' + ${i.index} + '\').submit()'"
+                                class="btn btn-secondary" style="margin-right: 5px;"><i class="fa fa-edit"></i>
+                                Editar</a>
+
+                            <form th:id="'formRemoverCat' + ${c.idCategoria}" th:action="@{/admin/categorias/remover}"
+                                method="post" style="display:none;">
+                                <input type="hidden" name="idCategoria" th:value="${c.idCategoria}">
+                            </form>
+
+                            <a href="#"
+                                th:onclick="'if(confirm(\'Deseja realmente excluir esta categoria?\')) { document.getElementById(\'formRemoverCat' + ${c.idCategoria} + '\').submit(); }'"
+                                class="btn btn-danger"><i class="fa fa-trash"></i> Excluir</a>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Mensagem mostrando X de Y -->
+            <div style="margin-top: 20px; text-align: center;">
+                <strong>Mostrando <span th:text="${itensPaginaCategorias}"></span> de
+                    <span th:text="${totalItensCategorias}"></span></strong>
+            </div>
+
+            <!-- FORM INVISÍVEL PARA PAGINAÇÃO (POST) -->
+            <form id="formPaginacaoCategorias" method="post" th:action="@{/admin/dashboard}">
+                <input type="hidden" name="pageCategorias" id="pageCategoriasHidden"
+                    th:value="${paginaAtualCategorias}" />
+                <input type="hidden" name="sizeCategorias" th:value="${sizeCategorias}" />
+                <input type="hidden" name="acao" value="categorias" />
+            </form>
+
+            <!-- PAGINAÇÃO -->
+            <nav aria-label="Navegação de páginas de categorias" style="text-align: center;">
+                <ul class="pagination">
+
+                    <!-- VOLTAR -->
+                    <li class="page-item" th:classappend="${paginaAtualCategorias == 1} ? 'disabled'">
+                        <a class="page-link" href="javascript:void(0)"
+                            th:onclick="'document.getElementById(\'pageCategoriasHidden\').value=' + (${paginaAtualCategorias - 1}) + '; document.getElementById(\'formPaginacaoCategorias\').submit();'">
+                            Anterior
+                        </a>
+                    </li>
+
+                    <!-- NÚMEROS -->
+                    <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPaginasCategorias)}"
+                        th:classappend="${i == paginaAtualCategorias} ? 'active'">
+                        <a class="page-link" href="javascript:void(0)" th:text="${i}"
+                            th:onclick="'document.getElementById(\'pageCategoriasHidden\').value=' + (${i}) + '; document.getElementById(\'formPaginacaoCategorias\').submit();'">
+                        </a>
+                    </li>
+
+                    <!-- PRÓXIMO -->
+                    <li class="page-item"
+                        th:classappend="${paginaAtualCategorias == totalPaginasCategorias} ? 'disabled'">
+                        <a class="page-link" href="javascript:void(0)"
+                            th:onclick="'document.getElementById(\'pageCategoriasHidden\').value=' + (${paginaAtualCategorias + 1}) + '; document.getElementById(\'formPaginacaoCategorias\').submit();'">
+                            Próximo
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+        </div>
+
+        <!-- TAB PRODUTOS -->
+        <div id="produtos" class="tab-panel" th:classappend="${abaAtiva == 'produtos'} ? ' active'">
+            <div class="card-header-custom">
+
+                <!-- ESQUERDA: Ícone + Título -->
+                <div class="left-area">
+                    <h2 class="produto-header-title"><i class="fa fa-hashtag"></i> Produtos</h2>
+                </div>
+
+                <!-- DIREITA: Label + Select + Link -->
+                <div class="right-area">
+                    <!-- ALTERA TAMANHO DA PÁGINA (POST PARA NÃO APARECER NA URL) -->
+                    <form method="post" th:action="@{/admin/dashboard}">
+                        <label for="sizeProdutos">Itens por página:</label>
+
+                        <select id="sizeProdutos" name="sizeProdutos" class="form-select" onchange="this.form.submit()">
+                            <option th:each="sProd : ${sizesProd}" th:value="${sProd}" th:text="${sProd}"
+                                th:selected="${sProd == sizeProdutos}"> </option>
+                        </select>
+
+                        <input type="hidden" name="pageProdutos" th:value="${paginaAtualProdutos}">
+                        <input type="hidden" name="acao" value="produtos">
+                    </form>
+
+                    <a class="btn btn-primary" th:href="@{/admin/produtos/novo}"><i class="fa fa-plus-square"></i>
+                        Novo Produto</a>
+                </div>
+            </div>
+
+            <table class="table-striped" style="width:100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="padding: 10px;" hidden>ID</th>
+                        <th style="text-align: center;">Nome</th>
+                        <th style="text-align: center;">Preço</th>
+                        <th style="text-align: center;">Estoque</th>
+                        <th style="text-align: center;">Destaque</th>
+                        <th style="text-align: center;">Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="p, i : ${produtos}">
+                        <td th:text="${p.idProduto}" hidden style="padding: 10px;"></td>
+                        <td th:text="${p.nome}"></td>
+                        <td th:text="${#numbers.formatCurrency(p.preco)}" style="text-align: center;"></td>
+                        <td th:text="${p.estoque}" style="text-align: center;"></td>
+                        <td th:text="${p.destaque ? 'Sim' : 'Não'}" style="text-align: center;"></td>
+
+                        <td style="text-align: center;">
+
+                            <form th:id="'formEditar' + ${i.index}" th:action="@{/admin/produtos/editar}" method="post">
+                                <input type="hidden" name="idProduto" th:value="${p.idProduto}">
+                            </form>
+
+                            <a href="#"
+                                th:onclick="'document.getElementById(\'formEditar' + ${i.index} + '\').submit()'"
+                                class="btn btn-secondary" style="margin-right: 5px;"><i class="fa fa-edit"></i>
+                                Editar</a>
+
+                            <form th:id="'formRemover' + ${i.index}" th:action="@{/admin/produtos/remover}"
+                                method="post" style="display:none;">
+                                <input type="hidden" name="idProduto" th:value="${p.idProduto}">
+                            </form>
+
+                            <a href="#"
+                                th:onclick="'if(confirm(\'Deseja realmente excluir este produto?\')) { document.getElementById(\'formRemover' + ${i.index} + '\').submit(); }'"
+                                class="btn btn-danger"><i class="fa fa-trash"></i> Excluir</a>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Mensagem mostrando X de Y -->
+            <div style="margin-top: 20px; text-align: center;">
+                <strong>Mostrando <span th:text="${itensPaginaProdutos}"></span> de
+                    <span th:text="${totalItensProdutos}"></span></strong>
+            </div>
+
+            <!-- FORM INVISÍVEL PARA PAGINAÇÃO (POST) -->
+            <form id="formPaginacaoProdutos" method="post" th:action="@{/admin/dashboard}">
+                <input type="hidden" name="pageProdutos" id="pageProdutosHidden" th:value="${paginaAtualProdutos}" />
+                <input type="hidden" name="sizeProdutos" th:value="${sizeProdutos}" />
+                <input type="hidden" name="acao" value="produtos" />
+            </form>
+
+            <!-- PAGINAÇÃO -->
+            <nav aria-label="Navegação de páginas de produtos" style="text-align: center;">
+                <ul class="pagination">
+
+                    <!-- VOLTAR -->
+                    <li class="page-item" th:classappend="${paginaAtualProdutos == 1} ? 'disabled'">
+                        <a class="page-link" href="javascript:void(0)"
+                            th:onclick="'document.getElementById(\'pageProdutosHidden\').value=' + (${paginaAtualProdutos - 1}) + '; document.getElementById(\'formPaginacaoProdutos\').submit();'">
+                            Anterior
+                        </a>
+                    </li>
+
+                    <!-- NÚMEROS -->
+                    <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPaginasProdutos)}"
+                        th:classappend="${i == paginaAtualProdutos} ? 'active'">
+                        <a class="page-link" href="javascript:void(0)" th:text="${i}"
+                            th:onclick="'document.getElementById(\'pageProdutosHidden\').value=' + (${i}) + '; document.getElementById(\'formPaginacaoProdutos\').submit();'">
+                        </a>
+                    </li>
+
+                    <!-- PRÓXIMO -->
+                    <li class="page-item" th:classappend="${paginaAtualProdutos == totalPaginasProdutos} ? 'disabled'">
+                        <a class="page-link" href="javascript:void(0)"
+                            th:onclick="'document.getElementById(\'pageProdutosHidden\').value=' + (${paginaAtualProdutos + 1}) + '; document.getElementById(\'formPaginacaoProdutos\').submit();'">
+                            Próximo
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+
+        </div>
+
+        <div class="toast-container" id="toastContainer"></div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer id="footer">
+        <div id="admin-footer" class="section">
+            <!-- /container -->
+            <div class="container">
+                <!-- row -->
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <span class="copyright">
+                            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                            Copyright &copy;
+                            <script>document.write(new Date().getFullYear());</script> Todos Direitos Reservados
+                            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        </span>
+                    </div>
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </div>
+    </footer>
+    <!-- /FOOTER -->
+
+    <!-- JSON PARA O JS -->
+    <script id="labelsMeses" type="application/json" th:utext="${meses}"></script>
+    <script id="dadosTotais" type="application/json" th:utext="${totais}"></script>
     <script th:src="@{/dist/js/admin-dashboard.js}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

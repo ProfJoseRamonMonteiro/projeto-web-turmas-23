@@ -2,15 +2,7 @@ package com.projetoweb.models;
 
 import java.math.BigDecimal;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "itens_pedido")
@@ -21,11 +13,11 @@ public class ItemPedidoModel {
     private Long idItemPedido;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pedido_id")
+    @JoinColumn(name = "pedido_id", nullable = true)
     private PedidoModel pedido;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "produto_id")
+    @JoinColumn(name = "produto_id", nullable = true)
     private ProdutoModel produto;
 
     @Column(nullable = false)
@@ -34,6 +26,7 @@ public class ItemPedidoModel {
     @Column(nullable = false)
     private BigDecimal precoUnitario;
 
+    // GETTERS E SETTERS
     public Long getIdItemPedido() {
         return idItemPedido;
     }
@@ -73,7 +66,5 @@ public class ItemPedidoModel {
     public void setPrecoUnitario(BigDecimal precoUnitario) {
         this.precoUnitario = precoUnitario;
     }
-
-    
 
 }

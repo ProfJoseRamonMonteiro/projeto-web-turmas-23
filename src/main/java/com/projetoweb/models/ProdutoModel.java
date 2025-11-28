@@ -1,10 +1,7 @@
 package com.projetoweb.models;
 
 import java.math.BigDecimal;
-import java.text.NumberFormat;
-import java.util.Locale;
-
-import org.springframework.data.annotation.Transient;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,7 +12,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "produtos")
@@ -25,37 +28,44 @@ public class ProdutoModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idProduto;
 
-    @Column(nullable = false, length = 140)
+    @NotBlank
+    @Size(max = 140)
     private String nome;
 
-    @Column(length = 1000)
+    @Size(max = 1000)
     private String descricao;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoria_id")
+    @JoinColumn(name = "categoria_id", nullable = true)
     private CategoriaModel categoria;
 
-    @Column(nullable = false)
+    @NotNull
+    @DecimalMin("0.00")
     private BigDecimal preco;
 
-    @Column(nullable = false)
+    @NotNull
+    @Min(0)
     private Integer estoque = 0;
 
-    @Column(nullable = false)
     private boolean emPromocao = false;
 
-    @Column(nullable = false)
+    @DecimalMin("0.00")
+    private BigDecimal precoPromocional;
+
     private boolean destaque = false;
 
     @Lob
     @Column(columnDefinition = "LONGBLOB")
-    private byte[] imagem; // campo binário para armazenar a imagem
+    private byte[] imagem;
 
-    @Transient
-	Locale ptBr = Locale.of("pt", "BR");
-	
-	@Transient
-	String precoFormatado;
+    // RELACIONAMENTOS IMPORTANTES
+    @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY)
+    private List<AvaliacaoModel> avaliacoes;
+
+    @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY)
+    private List<ItemPedidoModel> itens;
+
+    // GETTERS E SETTERS
 
     public Long getIdProduto() {
         return idProduto;
@@ -113,6 +123,14 @@ public class ProdutoModel {
         this.emPromocao = emPromocao;
     }
 
+    public BigDecimal getPrecoPromocional() {
+        return precoPromocional;
+    }
+
+    public void setPrecoPromocional(BigDecimal precoPromocional) {
+        this.precoPromocional = precoPromocional;
+    }
+
     public boolean isDestaque() {
         return destaque;
     }
@@ -129,13 +147,20 @@ public class ProdutoModel {
         this.imagem = imagem;
     }
 
-    public String getPrecoFormatado() {
-		return precoFormatado;
-	}
+    public List<AvaliacaoModel> getAvaliacoes() {
+        return avaliacoes;
+    }
 
-	public void setPrecoFormatado(String precoFormatado) {
-		precoFormatado = NumberFormat.getCurrencyInstance(ptBr).format(this.preco);
-		this.precoFormatado = precoFormatado;
-	}
+    public void setAvaliacoes(List<AvaliacaoModel> avaliacoes) {
+        this.avaliacoes = avaliacoes;
+    }
+
+    public List<ItemPedidoModel> getItens() {
+        return itens;
+    }
+
+    public void setItens(List<ItemPedidoModel> itens) {
+        this.itens = itens;
+    }
 
 }

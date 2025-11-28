@@ -1,0 +1,296 @@
+.btn-add-carrinho {
+    position: relative;
+    border: 2px solid transparent;
+    height: 40px;
+    padding: 0 30px;
+    background-color: #1f3e18;
+    color: #FFF;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-radius: 40px;
+    -webkit-transition: 0.2s all;
+    transition: 0.2s all;
+}
+
+.btn-add-carrinho>i {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    line-height: 38px;
+    color: #0d2d0a;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.btn-add-carrinho:hover {
+    background-color: #FFF;
+    color: #0d2d0a;
+    border-color: #0d2d0a;
+    padding: 0px 30px 0px 50px;
+}
+
+.btn-add-carrinho:hover>i {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ========================= */
+/* ESTILOS DO MODAL        */
+/* ========================= */
+.modal {
+    display: none;
+    /* Escondido por padrão */
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Fundo preto com opacidade */
+}
+
+.modal-conteudo {
+    background-color: #fefefe;
+    margin: 15% auto;
+    /* 15% do topo e centralizado */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.fechar-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.modal-corpo {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.modal-imagem {
+    width: 150px;
+    /* Imagem pequena */
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.modal-footer {
+    text-align: right;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    margin-top: 15px;
+}
+
+.btn-confirmar {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* ========================= */
+/* ESTILOS DO CARRINHO     */
+/* ========================= */
+.dropdown-carrinho {
+    position: relative;
+    display: inline-block;
+}
+
+.carrinho-conteudo {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #f9f9f9;
+    min-width: 300px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    padding: 12px;
+    z-index: 11;
+    border-radius: 4px;
+}
+
+.btn-carrinho-link {
+    text-decoration: none;
+    /* Remove sublinhado padrão do link */
+    display: inline-block;
+    /* Permite padding e altura como um botão */
+}
+
+.btn-carrinho-link>i {
+    color: #9fd38f;
+}
+
+.btn-carrinho-link>span {
+    font-size: 12px;
+}
+
+.btn-carrinho-link>span.qtd-item {
+    position: absolute;
+    right: 15px;
+    top: -10px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    border-radius: 50%;
+    font-size: 10px;
+    color: #002400;
+    background-color: #fff;
+}
+
+#listaItensCarrinho {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.item-carrinho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    /* Para animação de remoção */
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out, height 0.5s ease-out, padding 0.5s ease-out;
+    overflow: hidden;
+}
+
+.item-carrinho.removendo {
+    opacity: 0;
+    transform: translateX(100%);
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.mini-imagem {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 2px;
+    margin-right: 10px;
+}
+
+.input-quantidade-carrinho {
+    width: 50px;
+    text-align: center;
+}
+
+.btn-remover {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    padding: 5px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.8em;
+}
+
+.total-compra {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: left;
+    /* Alinhar à esquerda no footer para dar espaço ao botão */
+}
+
+.carrinho-footer {
+    display: flex;
+    justify-content: space-between;
+    /* Distribui Total e Botão */
+    align-items: center;
+    padding-top: 10px;
+}
+
+.btn-finalizar {
+    background-color: #5bc0de;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.button-link {
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+
+/* ==================== TOASTS ==================== */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 99999;
+}
+
+.toast {
+    padding: 12px 18px;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 15px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.22);
+    opacity: 0;
+    transform: translateX(120%);
+    transition: opacity 0.25s ease, transform 0.35s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 260px;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(0%);
+}
+
+.toast.success {
+    background-color: #28a745;
+}
+
+.toast.error {
+    background-color: #dc3545;
+}
+
+.toast.warning {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.toast.info {
+    background-color: #007bff;
+}
+
+.toast button {
+    border: none;
+    background: transparent;
+    color: inherit;
+    font-size: 16px;
+    font-weight: bold;
+    margin-left: 12px;
+    cursor: pointer;
+}

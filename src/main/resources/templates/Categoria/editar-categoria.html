@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Edição de Produto</title>
+
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link type="text/css" rel="stylesheet" th:href="@{/dist/css/bootstrap.min.css}" />
+
+    <!-- Slick -->
+    <link type="text/css" rel="stylesheet" th:href="@{/dist/css/slick.css}" />
+    <link type="text/css" rel="stylesheet" th:href="@{/dist/css/slick-theme.css}" />
+
+    <!-- nouislider -->
+    <link type="text/css" rel="stylesheet" th:href="@{/dist/css/nouislider.min.cs}" />
+
+
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" th:href="@{/dist/css/font-awesome.min.css}">
+
+    <link rel="stylesheet" th:href="@{/dist/css/produtos.css}">
+</head>
+
+<body class="admin-body">
+
+    <header class="admin-header">
+
+        <div class="container">
+            <ul class="admin-header pull-left">
+                <li><img src="/image/logo-projeto-web.png" alt="" height="30px"></li>
+                <li>
+                    <h1 class="header-title">Dashboard Administrativo</h1>
+                </li>
+            </ul>
+            <ul class="admin-header pull-right">
+                <li><a class="nav-link" th:href="@{/admin/dashboard}"><i class="fa fa-home"></i> Início</a></li>
+                <li><a class="nav-link" th:href="@{/logout}"><i class="fa fa-sign-out"></i> Sair</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="admin-main">
+
+        <h2>Alterar Informações</h2>
+
+        <!-- FORMULÁRIO PRINCIPAL -->
+        <form class="product-form" th:action="@{/admin/categorias/editar/salvar}" method="post"
+            th:object="${categoriaDTO}" enctype="multipart/form-data">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="hidden" th:field="*{idCategoria}">
+                    <label for="nome" class="form-label">Nome da Categoria</label>
+                    <input type="text" id="nome" th:field="*{nome}" class="form-control" required />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="descricao" class="form-label">Descrição</label>
+                    <textarea id="descricao" th:field="*{descricao}" rows="4" class="form-control"></textarea>
+                </div>
+            </div>
+
+            <div class="form-footer">
+
+                <button type="submit" class="btn btn-submit">
+                    <i class="fa fa-floppy-o"></i> Salvar Alterações
+                </button>
+
+                <!-- BOTÃO DELETAR -->
+                <a href="javascript:void(0)" onclick="removerCategoria()" class="btn btn-remove">
+                    <i class="fa fa-trash"></i> Excluir Categoria
+                </a>
+
+                <a th:href="@{/admin/dashboard}" class="btn btn-cancel">
+                    <i class="fa fa-window-close"></i> Cancelar
+                </a>
+
+            </div>
+
+        </form>
+
+        <!-- FORM DE REMOÇÃO (FORA do form principal!) -->
+        <form id="formRemoverCat" th:action="@{/admin/categorias/remover}" method="post">
+            <input type="hidden" name="idCategoria" th:value="${categoria.idCategoria}">
+        </form>
+
+        <!-- SCRIPT -->
+        <script>
+            function removerCategoria() {
+                if (confirm("Deseja realmente excluir esta categoria?")) {
+                    document.getElementById("formRemoverCat").submit();
+                }
+            }
+        </script>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer id="footer">
+        <div id="admin-footer" class="section">
+            <!-- /container -->
+            <div class="container">
+                <!-- row -->
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <span class="copyright">
+                            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                            Copyright &copy;
+                            <script>document.write(new Date().getFullYear());</script> Todos Direitos Reservados
+                            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        </span>
+                    </div>
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </div>
+    </footer>
+    <!-- /FOOTER -->
+
+    <script th:src="@{/dist/js/edit-produto.js}"></script>
+</body>
+
+</html>

@@ -1,22 +1,11 @@
-package com.projetoweb.models;
+package com.projetoweb.dto;
 
-import jakarta.persistence.*;
+public class CategoriaEdicaoDTO {
 
-@Entity
-@Table(name = "categorias")
-public class CategoriaModel {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCategoria;
-
-    @Column(nullable = false, unique = true, length = 80)
     private String nome;
-
-    @Column(length = 255)
     private String descricao;
 
-    // GETTERS E SETTERS
     public Long getIdCategoria() {
         return idCategoria;
     }

@@ -10,6 +10,7 @@ import com.projetoweb.models.CategoriaModel;
 public interface CategoriaRepo extends JpaRepository<CategoriaModel, Long>{
 
     Optional<CategoriaModel> findByNomeIgnoreCase(String nome);
-    boolean existsByNome(String nome);
+    boolean existsByNomeIgnoreCase(String nome);
+
 
 }

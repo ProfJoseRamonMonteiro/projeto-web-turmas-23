@@ -5,17 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "pedidos")
@@ -25,12 +15,11 @@ public class PedidoModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idPedido;
 
-    // cliente que fez o pedido
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id")
+    @JoinColumn(name = "cliente", nullable = true)
     private UsuarioModel cliente;
 
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "pedido", fetch = FetchType.LAZY)
     private List<ItemPedidoModel> itens = new ArrayList<>();
 
     @Column(nullable = false)
@@ -40,8 +29,9 @@ public class PedidoModel {
     private LocalDateTime dataCriacao = LocalDateTime.now();
 
     @Column(length = 30)
-    private String status = "NEW"; // NEW, CONFIRMADO, CANCELADO, etc.
+    private String status = "Novo";
 
+    // GETTERS E SETTERS
     public Long getIdPedido() {
         return idPedido;
     }
@@ -89,7 +79,5 @@ public class PedidoModel {
     public void setStatus(String status) {
         this.status = status;
     }
-
-    
 
 }

@@ -34,7 +34,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
 
         // se admin e senha temporária, forçar mudança de senha (exceção: própria rota de alteração)
-        if (u.getNivelAcesso() == NivelAcessoEnum.ADMINISTRADOR && u.isPrimeiroAcesso()) {
+        if (u.getNivelAcesso() == NivelAcessoEnum.ADMINISTRADOR && u.getPrimeiroAcesso()) {
             if (!uri.startsWith("/usuario/alterar-senha") && !uri.startsWith("/logout")) {
                 response.sendRedirect("/usuario/alterar-senha");
                 return false;

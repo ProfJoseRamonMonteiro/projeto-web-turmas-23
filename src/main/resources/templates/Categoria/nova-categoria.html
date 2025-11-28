@@ -1,8 +1,9 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<!doctype html>
+<html lang="pt-br">
 
 <head>
-    <title>Alterar Senha</title>
+    <meta charset="utf-8">
+    <title>Cadastro de Categorias - Dashboard</title>
 
     <!-- Google font -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
@@ -15,41 +16,64 @@
     <link type="text/css" rel="stylesheet" th:href="@{/dist/css/slick-theme.css}" />
 
     <!-- nouislider -->
-    <link type="text/css" rel="stylesheet" th:href="@{/dist/css/nouislider.min.css}" />
+    <link type="text/css" rel="stylesheet" th:href="@{/dist/css/nouislider.min.cs}" />
+
 
     <!-- Font Awesome Icon -->
     <link rel="stylesheet" th:href="@{/dist/css/font-awesome.min.css}">
 
-    <link rel="stylesheet" th:href="@{/dist/css/admin-dashboard.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/produtos.css}">
 </head>
 
 <body class="admin-body">
-
     <header class="admin-header">
+
         <div class="container">
             <ul class="admin-header pull-left">
                 <li><img src="/image/logo-projeto-web.png" alt="" height="30px"></li>
                 <li>
-                    <h1 class="header-title">Alterar Senha</h1>
+                    <h1 class="header-title">Dashboard Administrativo</h1>
                 </li>
+            </ul>
+            <ul class="admin-header pull-right">
+                <li><a class="nav-link" th:href="@{/admin/dashboard}"><i class="fa fa-home"></i> Início</a></li>
+                <li><a class="nav-link" th:href="@{/logout}"><i class="fa fa-sign-out"></i> Sair</a></li>
             </ul>
         </div>
     </header>
 
     <main class="admin-main">
-        <h2>Alterar Senha</h2>
+        <h2>Cadastrar Categoria</h2>
 
-        <form method="post" action="/usuario/alterar-senha/salvar">
+        <form id="formProduto" th:action="@{/admin/categorias/nova/salvar}" method="post" enctype="multipart/form-data"
+            class="product-form">
             <div class="form-row">
-                <label class="form-label">Nova Senha</label>
-                <input type="password" name="novaSenha" class="form-control" required>
+                <div class="form-group">
+                    <label for="nome" class="form-label">Nome</label>
+                    <input id="nome" name="nome" type="text" class="form-control" required>
+                </div>
             </div>
 
-            <div class="form-row pull-right" style="margin-top: 10px;">
-                <button class="btn btn-primary"><i class="fa fa-floppy-o"></i> Salvar</button>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="descricao" class="form-label">Descrição</label>
+                    <textarea id="descricao" name="descricao" rows="4" maxlength="1000" class="form-control"
+                        required></textarea>
+                </div>
             </div>
+
+            <!-- BOTÕES -->
+            <div class="form-footer">
+
+                <!-- BOTÃO SALVAR (submit do formulário principal) -->
+                <button type="submit" class="btn btn-submit"><i class="fa fa-floppy-o"></i> Salvar Categoria</button>
+
+                <a th:href="@{/admin/dashboard}" class="btn btn-cancel"><i class="fa fa-window-close"></i> Cancelar</a>
+            </div>
+
         </form>
 
+        <div id="statusMessage" class="status-message"></div>
     </main>
 
     <!-- FOOTER -->
@@ -75,6 +99,8 @@
     </footer>
     <!-- /FOOTER -->
 
+    <div class="toast-container" id="toastContainer"></div>
+    <script th:src="@{/dist/js/categorias.js}"></script>
 </body>
 
 </html>

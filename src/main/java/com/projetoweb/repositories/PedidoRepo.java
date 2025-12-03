@@ -65,4 +65,10 @@ public interface PedidoRepo extends JpaRepository<PedidoModel, Long> {
         List<VendaMesProjecaoDTO> vendasPorMesFiltro(
                         @Param("mes") Integer mes,
                         @Param("ano") Integer ano);
+
+        @Query(value = "SELECT MONTH(p.data_criacao) AS mes, SUM(p.total) AS total "
+                + "FROM Pedidos p "
+                + "GROUP BY MONTH(p.data_criacao) "
+                + "ORDER BY mes;", nativeQuery = true)
+        List<Object[]> findVendasPorAnoEMes();
 }
